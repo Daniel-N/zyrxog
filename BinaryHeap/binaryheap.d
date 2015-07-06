@@ -55,15 +55,8 @@ public:
     return val;
   }
 
-  uint Size() const nothrow pure @nogc
-  {
-    return size;
-  }
-
-  bool Empty() const nothrow pure @nogc
-  {
-    return size == 0;
-  }
+  uint Size()  const nothrow pure @nogc @property { return size; }
+  bool Empty() const nothrow pure @nogc @property { return size == 0; }
 
 private:
   // PercolateDown(Floyd)

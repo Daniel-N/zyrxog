@@ -6,6 +6,7 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 public class BinaryHeap<T> where T : IComparable<T>
 {
@@ -38,6 +39,7 @@ public class BinaryHeap<T> where T : IComparable<T>
       tmax = (T)MaxValueField.GetValue(typeof(T));
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Put(T val)
   {
     uint gap = ++size;
@@ -54,7 +56,7 @@ public class BinaryHeap<T> where T : IComparable<T>
 
   public T Get()
   {
-    Debug.Assert(!Empty());
+    Debug.Assert(!Empty);
 
     T val = data[1];
     data[1] = data[size];
@@ -65,15 +67,8 @@ public class BinaryHeap<T> where T : IComparable<T>
     return val;
   }
 
-  public uint Size()
-  {
-    return size;
-  }
-
-  public bool Empty()
-  {
-    return size == 0;
-  }
+  public uint Size  { get { return size; } }
+  public bool Empty { get { return size == 0; } }
 
   // PercolateDown(Floyd)
   private void PercolateDown(uint gap)
@@ -81,7 +76,7 @@ public class BinaryHeap<T> where T : IComparable<T>
     T val = data[gap];
 
     // Percolate Down
-    for(uint child; gap*2 <= size; gap = child)
+    for(uint child; gap * 2 <= size; gap = child)
     {
       child = gap * 2;
 
