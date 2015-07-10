@@ -31,7 +31,7 @@ public:
   {
     assert(capacity > 0);
 
-    data[0] = MinValue<T>::value;
+    data[0] = MinValue<T>::value; // Use 'MinValue' as a sentinel
   }
 
   template

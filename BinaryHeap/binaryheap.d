@@ -23,7 +23,9 @@ public:
     assert(capacity > 0);
     data = new T_POD[capacity];
 
-    data[0] = cast(T_POD)T.min;
+    static assert(is(Unqual!(typeof(T.min)) == Unqual!T));
+    static assert(is(Unqual!(typeof(T.max)) == Unqual!T));
+    data[0] = cast(T_POD)T.min; // Use 'T.min' as a sentinel
     tmax    = cast(T_POD)T.max;
   }
 
@@ -48,7 +50,7 @@ public:
 
     auto val = cast(T)data[1]; // NRVO elides the destructor!
     data[1] = data[size];
-    data[size--] = tmax;
+    data[size--] = tmax; // Use 'T.max' as a sentinel
 
     PercolateDown(1);
 
