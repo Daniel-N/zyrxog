@@ -25,9 +25,9 @@ class BinaryHeap
 private:
   std::vector<T> data;
   uint32_t       size = 0;
-  const T        tmax = MaxValue<T>::value;
+  const T        tmax;
 public:
-  explicit BinaryHeap(uint32_t capacity) : data(capacity)
+  explicit BinaryHeap(uint32_t capacity) : data(capacity), tmax(MaxValue<T>::value)
   {
     assert(capacity > 0);
 
@@ -70,12 +70,12 @@ public:
     return val;
   }
 
-  uint32_t Size() const throw() // 'noexcept' (not impl in VS2013)
+  uint32_t Size() const noexcept
   {
     return size;
   }
 
-  bool Empty() const throw() // 'noexcept' (not impl in VS2013)
+  bool Empty() const noexcept
   {
     return size == 0;
   }
@@ -109,15 +109,13 @@ private:
 template<typename T>
 struct MinValue<T, true>
 {
-  static const T value; // 'constexpr' (not impl in VS2013)
+  static constexpr T value = std::numeric_limits<T>::min();
 };
-template<typename T>
-const T MinValue<T, true>::value = std::numeric_limits<T>::min();
 
 template<typename T>
 struct MinValue<T, false>
 {
-  static const T value; // 'constexpr' (not impl in VS2013)
+  static const T value; // 'constexpr' (not fully impl in VS2015)
 };
 template<typename T>
 const T MinValue<T, false>::value = T::min;
@@ -125,15 +123,13 @@ const T MinValue<T, false>::value = T::min;
 template<typename T>
 struct MaxValue<T, true>
 {
-  static const T value; // 'constexpr' (not impl in VS2013)
+  static constexpr T value = std::numeric_limits<T>::max();
 };
-template<typename T>
-const T MaxValue<T, true>::value = std::numeric_limits<T>::max();
 
 template<typename T>
 struct MaxValue<T, false>
 {
-  static const T value; // 'constexpr' (not impl in VS2013)
+  static const T value; // 'constexpr' (not fully impl in VS2015)
 };
 template<typename T>
 const T MaxValue<T, false>::value = T::max;
