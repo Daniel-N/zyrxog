@@ -25,13 +25,13 @@ class BinaryHeap
 private:
   std::vector<T> data;
   uint32_t       size = 0;
-  const T        tmax;
+  const T        tmax = MaxValue<T>();
 public:
-  explicit BinaryHeap(uint32_t capacity) : data(capacity), tmax(MaxValue<T>::value)
+  explicit BinaryHeap(uint32_t capacity) : data(capacity)
   {
     assert(capacity > 0);
 
-    data[0] = MinValue<T>::value; // Use 'MinValue' as a sentinel
+    data[0] = MinValue<T>(); // Use 'MinValue' as a sentinel
   }
 
   template
@@ -109,29 +109,25 @@ private:
 template<typename T>
 struct MinValue<T, true>
 {
-  static constexpr T value = std::numeric_limits<T>::min();
+  constexpr operator const T() const noexcept { return std::numeric_limits<T>::min(); }
 };
 
 template<typename T>
 struct MinValue<T, false>
 {
-  static const T value; // 'constexpr' (not fully impl in VS2015)
+  constexpr operator const T() const noexcept { return T::min; }
 };
-template<typename T>
-const T MinValue<T, false>::value = T::min;
 
 template<typename T>
 struct MaxValue<T, true>
 {
-  static constexpr T value = std::numeric_limits<T>::max();
+  constexpr operator const T() const noexcept { return std::numeric_limits<T>::max(); }
 };
 
 template<typename T>
 struct MaxValue<T, false>
 {
-  static const T value; // 'constexpr' (not fully impl in VS2015)
+  constexpr operator const T() const noexcept { return T::max; }
 };
-template<typename T>
-const T MaxValue<T, false>::value = T::max;
 
 #endif // #ifndef BINARY_HEAP_HH
