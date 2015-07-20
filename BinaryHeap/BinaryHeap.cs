@@ -5,7 +5,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 public class BinaryHeap<T> where T : IComparable<T>
@@ -45,7 +44,7 @@ public class BinaryHeap<T> where T : IComparable<T>
     uint gap = ++size;
 
     if(gap == data.Length)
-      Array.Resize(ref data, (int)(2 * data.Length));
+      Array.Resize(ref data, 2 * data.Length);
 
     // Percolate Up
     for(; val.CompareTo(data[gap / 2]) < 0; gap /= 2)
