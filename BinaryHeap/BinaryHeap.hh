@@ -25,7 +25,7 @@ class BinaryHeap
 private:
   std::vector<T> data;
   uint32_t       size = 0;
-  const T        tmax = MaxValue<T>();
+  const  T       tmax = MaxValue<T>();
 public:
   explicit BinaryHeap(uint32_t capacity) : data(capacity)
   {
@@ -42,12 +42,12 @@ public:
       std::is_same<std::decay_t<U>, std::decay_t<T>>::value
     >
   >
-  void Put(U&& val) // 'noexcept(...)' (not impl in VS2013)
+  void Put(U&& val) noexcept(noexcept(*(data.data()) = std::forward<U>(val)) && noexcept(*(data.data()) = std::move(*(data.data()))))
   {
     uint32_t gap = ++size;
 
     if(gap == data.size())
-      data.resize(2 * data.size());
+      data.resize(2 * data.size()); // may invoke std::terminate
 
     // Percolate Up
     for(; val < data[gap / 2]; gap /= 2)
@@ -57,7 +57,7 @@ public:
     data[gap] = std::forward<U>(val);
   }
 
-  T Get() // 'noexcept(...)' (not impl in VS2013)
+  T Get() noexcept(noexcept(T(std::move(*(data.data())))) && noexcept(*(data.data()) = std::move(*(data.data()))))
   {
     assert(!Empty());
 
@@ -82,7 +82,7 @@ public:
 
 private:
   // PercolateDown(Floyd)
-  void PercolateDown(uint32_t gap)
+  void PercolateDown(uint32_t gap) noexcept(noexcept(T(std::move(*(data.data())))) && noexcept(*(data.data()) = std::move(*(data.data()))))
   {
     T val = std::move(data[gap]);
 
