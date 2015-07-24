@@ -10,6 +10,7 @@
 #include <vector>
 #include <cstdint>
 #include <cassert>
+#include <type_traits>
 
 // Use 'std::numeric_limits<T>::min()' fallback on 'T::min'.
 template<typename T, bool = std::numeric_limits<T>::is_specialized>
@@ -25,7 +26,7 @@ class BinaryHeap
 private:
   std::vector<T> data;
   uint32_t       size = 0;
-  const  T       tmax = MaxValue<T>();
+  const T        tmax = MaxValue<T>();
 public:
   explicit BinaryHeap(uint32_t capacity) : data(capacity)
   {
@@ -42,7 +43,10 @@ public:
       std::is_same<std::decay_t<U>, std::decay_t<T>>::value
     >
   >
-  void Put(U&& val) noexcept(noexcept(*(data.data()) = std::forward<U>(val)) && noexcept(*(data.data()) = std::move(*(data.data()))))
+  void Put(U&& val) noexcept
+  (
+    std::is_nothrow_assignable<T, U>() && std::is_nothrow_assignable<T, T&&>()
+  )
   {
     uint32_t gap = ++size;
 
@@ -57,7 +61,10 @@ public:
     data[gap] = std::forward<U>(val);
   }
 
-  T Get() noexcept(noexcept(T(std::move(*(data.data())))) && noexcept(*(data.data()) = std::move(*(data.data()))))
+  T Get() noexcept
+  (
+    std::is_nothrow_assignable<T, T&&>() && std::is_nothrow_constructible<T, T&&>()
+  )
   {
     assert(!Empty());
 
@@ -82,7 +89,10 @@ public:
 
 private:
   // PercolateDown(Floyd)
-  void PercolateDown(uint32_t gap) noexcept(noexcept(T(std::move(*(data.data())))) && noexcept(*(data.data()) = std::move(*(data.data()))))
+  void PercolateDown(uint32_t gap) noexcept
+  (
+    std::is_nothrow_assignable<T, T&&>() && std::is_nothrow_constructible<T, T&&>()
+  )
   {
     T val = std::move(data[gap]);
 
