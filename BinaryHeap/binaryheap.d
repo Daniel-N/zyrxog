@@ -29,7 +29,7 @@ public:
     tmax    = cast(T_POD)T.max;
   }
 
-  void Put(ref const(T) val) // emplace is not nothrow
+  void Put(ref const(T) val) nothrow
   {
     uint gap = ++size;
 
