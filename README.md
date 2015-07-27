@@ -1,2 +1,11 @@
 # zyrxog
-Optimization by Introspection
+## Optimization by Introspection
+
+
+### i7-4790K CPU @ 4.40GHZ (Linux x64)
+
+| milliseconds   | clang 3.5      | ldc master     | g++ 4.9.2     | gdc 4.9.2      | dmd v2.067.1   |
+|-------------- |-----------    |------------   |-----------    |-----------    |-------------- |
+| Put(easy)      | 1.450          | 1.466          | 1.473         | 1.438          | 2.991          |
+| Put(hard)      | 1.970          | 1.964          | 2.071         | 2.234          | 4.665          |
+| Get            | 101.087        | 106.106        | 125.310       | 103.100        | 117.834        |
