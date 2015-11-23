@@ -34,7 +34,11 @@ public:
     uint gap = ++size;
 
     if(gap == data.length)
-      data.length *= 2;
+    {
+      auto grow = data;
+      grow.length *= 2u;
+      data = grow;
+    }
 
     // Percolate Up
     for(; val < data[gap / 2]; gap /= 2)
