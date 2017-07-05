@@ -1,4 +1,4 @@
-﻿//          Copyright Daniel Nielsen 1998 - 2015.
+﻿//          Copyright Daniel Nielsen 1998 - 2017.
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -14,9 +14,9 @@ struct BinaryHeap(T)
   else
     alias T_POD=T;
 private:
-  T_POD[]         data;
-  uint            size = 0;
-  immutable T_POD tmax;
+  T_POD[] data;
+  T_POD   tmax;
+  uint    size = 0;
 public:
   this(uint capacity)
   {
@@ -91,39 +91,16 @@ private:
 }
 
 // POD avoids calling PostBlit and Destructor
-template POD(T)
+union POD(T)
 {
-  import std.typetuple;
-  import std.algorithm : map;
-  import std.string : format;
-  import std.range : zip, join;
+  private T payload;
 
-  enum codeof(S...) = S[0].stringof;
+  this(T) @disable;
 
-  private string codegen()
+  ref const(T) get() const nothrow pure @nogc @property
   {
-    alias names = FieldNameTuple!T;
-    alias types = staticMap!(codeof, FieldTypeTuple!T);
-
-    return zip([types], [names]).
-           map!(a => format("  %s %s;\n", a[0], a[1])).
-           join();
+    return payload;
   }
 
-  struct POD
-  {
-    mixin(codegen());
-
-    int opCmp(ref const(POD) rhs) const pure nothrow @nogc
-    {
-      return (cast(const(T))this).opCmp(*cast(const(T)*)&rhs);
-    }
-    int opCmp(ref const(T) rhs) const pure nothrow @nogc
-    {
-      return (cast(const(T))this).opCmp(rhs);
-    }
-
-    static if(isNested!T)
-      private void* POD_nested_POD; // xxx - Create a proper nested struct.
-  }
+  alias get this;
 }
